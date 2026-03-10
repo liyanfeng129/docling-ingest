@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+
+# Build
+dist/
+build/
+
+# Data
+chroma_db*/
+resources/pictures/*
+!resources/pictures/.gitkeep
+static/images/*
+!static/images/.gitkeep
+docling/output/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# HuggingFace cache
+.cache/
+
+# Docker
+docker-compose.override.yml

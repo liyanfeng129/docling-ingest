@@ -1,0 +1,72 @@
+{
+    "_comment": "Engine Ingestion Configuration - Remote strategies, helpers, and collections",
+    "strategies": {
+        "_comment": "Remote/AI strategies - executed in engine with Python",
+        "items": [
+            {
+                "id": "semantic_sections",
+                "label": "Semantic Sections (AI)",
+                "description": "AI identifies logical sections based on content meaning",
+                "type": "backend",
+                "enabled": false,
+                "endpoint": "/api/ingestion/strategy/semantic_sections",
+                "features": [
+                    "context-aware boundaries",
+                    "topic detection"
+                ],
+                "requires_llm": true
+            }
+        ]
+    },
+    "helpers": {
+        "_comment": "Remote/AI helpers - executed in engine with Python",
+        "items": [
+            {
+                "id": "ai_image_descriptions",
+                "label": "AI Image Descriptions",
+                "description": "Uses vision model to generate descriptions for images",
+                "type": "backend",
+                "enabled": true,
+                "icon": "🤖",
+                "endpoint": "/api/ingestion/helper/ai_image_descriptions",
+                "input_type": "images",
+                "output_type": "descriptions",
+                "requires_vision_model": true
+            },
+            {
+                "id": "ai_summarize_page",
+                "label": "AI Summarize Page",
+                "description": "Uses LLM to generate a summary for each page",
+                "type": "backend",
+                "enabled": false,
+                "icon": "📄",
+                "endpoint": "/api/ingestion/helper/ai_summarize_page",
+                "input_type": "pages",
+                "output_type": "summaries",
+                "requires_llm": true
+            }
+        ]
+    },
+    "embedding_models": {
+        "_comment": "Available embedding models for vector generation",
+        "items": [
+            {
+                "id": "snowflake",
+                "label": "Snowflake Arctic Embed",
+                "model_name": "Snowflake/snowflake-arctic-embed-l-v2.0",
+                "enabled": true,
+                "is_default": true,
+                "dimensions": 1024
+            },
+            {
+                "id": "openai",
+                "label": "OpenAI Ada-002",
+                "model_name": "text-embedding-ada-002",
+                "enabled": false,
+                "requires_api_key": true,
+                "dimensions": 1536
+            }
+        ]
+    },
+    "default_collection": "default"
+}

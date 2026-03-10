@@ -1,0 +1,44 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - proxy
+    environment:
+      - VITE_INGESTION_URL=http://localhost:4006
+
+  proxy:
+    build: ./backend/proxy
+    ports:
+      - "4006:4006"
+    environment:
+      - PORT=4006
+      - ENGINE_URL=http://engine:8000
+
+  engine:
+    build: ./backend/engine
+    ports:
+      - "8000:8000"
+    environment:
+      - ENABLE_VISION_MODEL=false
+      - CHROMA_PERSIST_DIRECTORY=/app/resources/chroma_db/default
+      - EMBEDDING_MODEL=Snowflake/snowflake-arctic-embed-l
+    volumes:
+      - chroma_data:/app/resources/chroma_db
+      - hf_cache:/root/.cache/huggingface
+
+  # Optional: enable with `docker compose --profile vision up`
+  ollama:
+    image: ollama/ollama:latest
+    profiles:
+      - vision
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  chroma_data:
+  hf_cache:
+  ollama_data:

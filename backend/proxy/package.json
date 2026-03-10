@@ -1,0 +1,25 @@
+{
+    "name": "docling-ingest-proxy",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js"
+    },
+    "keywords": ["docling", "ingestion", "pdf", "document-processing"],
+    "author": "",
+    "license": "MIT",
+    "description": "Proxy service for Docling Ingest - aggregates config and proxies to engine",
+    "dependencies": {
+        "axios": "^1.13.2",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.1.0",
+        "form-data": "^4.0.0",
+        "morgan": "^1.10.1",
+        "multer": "^1.4.5-lts.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.11"
+    }
+}

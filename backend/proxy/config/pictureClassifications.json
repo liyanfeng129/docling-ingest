@@ -1,0 +1,111 @@
+{
+    "_comment": "Docling Picture Classification Classes - from docling-ibm-models v3.10.3 DocumentFigureClassifier",
+    "_version": "3.x (January 2026)",
+    "_source": "docling_ibm_models.document_figure_classifier_model.document_figure_classifier_predictor",
+    "_note": "These are the ACTUAL 16 classes output by the model. Previous version had incorrect/expanded classes.",
+    "classes": [
+        "bar_chart",
+        "bar_code",
+        "chemistry_markush_structure",
+        "chemistry_molecular_structure",
+        "flow_chart",
+        "icon",
+        "line_chart",
+        "logo",
+        "map",
+        "other",
+        "pie_chart",
+        "qr_code",
+        "remote_sensing",
+        "screenshot",
+        "signature",
+        "stamp"
+    ],
+    "categories": {
+        "charts": {
+            "label": "Charts & Graphs",
+            "classes": [
+                "bar_chart",
+                "line_chart",
+                "pie_chart"
+            ]
+        },
+        "diagrams": {
+            "label": "Diagrams",
+            "classes": [
+                "flow_chart"
+            ]
+        },
+        "chemistry": {
+            "label": "Chemistry",
+            "classes": [
+                "chemistry_markush_structure",
+                "chemistry_molecular_structure"
+            ]
+        },
+        "maps": {
+            "label": "Maps & Satellite",
+            "classes": [
+                "map",
+                "remote_sensing"
+            ]
+        },
+        "codes": {
+            "label": "Barcodes & QR",
+            "classes": [
+                "bar_code",
+                "qr_code"
+            ]
+        },
+        "screenshots": {
+            "label": "Screenshots",
+            "classes": [
+                "screenshot"
+            ]
+        },
+        "decorative": {
+            "label": "Decorative",
+            "classes": [
+                "logo",
+                "icon",
+                "stamp",
+                "signature"
+            ]
+        },
+        "other": {
+            "label": "Other",
+            "classes": [
+                "other"
+            ]
+        }
+    },
+    "presets": {
+        "decorative": {
+            "label": "Decorative (Noise)",
+            "description": "Classes typically considered noise that users may want to auto-remove",
+            "classes": [
+                "logo",
+                "icon",
+                "stamp",
+                "signature",
+                "bar_code",
+                "qr_code"
+            ]
+        },
+        "content": {
+            "label": "Content-Rich",
+            "description": "Classes that typically contain meaningful content for RAG",
+            "classes": [
+                "bar_chart",
+                "line_chart",
+                "pie_chart",
+                "flow_chart",
+                "chemistry_markush_structure",
+                "chemistry_molecular_structure",
+                "map",
+                "remote_sensing",
+                "screenshot"
+            ]
+        }
+    }
+}

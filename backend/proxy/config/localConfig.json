@@ -1,0 +1,69 @@
+{
+    "_comment": "Local strategies and helpers - executed in frontend browser",
+    "strategies": {
+        "_comment": "Local strategies - frontend controls chunking/aggregation logic",
+        "localStrategies": [
+            {
+                "id": "embed_per_page",
+                "label": "One Embedding per Page",
+                "description": "Aggregates all text items of one page into a single markdown text",
+                "type": "local",
+                "enabled": true,
+                "features": [
+                    "page-level aggregation",
+                    "image metadata attached"
+                ]
+            },
+            {
+                "id": "chunked_fixed",
+                "label": "Fixed-Size Chunks",
+                "description": "Merges all content, splits into ~500 char chunks with overlap",
+                "type": "local",
+                "enabled": true,
+                "features": [
+                    "configurable chunk size",
+                    "overlap support"
+                ]
+            }
+        ]
+    },
+    "helpers": {
+        "_comment": "Local helpers - execute entirely in the frontend browser",
+        "localHelpers": [
+            {
+                "id": "remove_logos",
+                "label": "Remove All Logos",
+                "description": "Finds all images classified as 'logo' and marks them as deleted",
+                "type": "local",
+                "enabled": true,
+                "icon": "🖼️",
+                "input_type": "images",
+                "output_type": "deletion",
+                "filter": {
+                    "classification": "logo"
+                }
+            },
+            {
+                "id": "remove_empty",
+                "label": "Remove Empty Text",
+                "description": "Finds text items with empty or whitespace-only content and marks them as deleted",
+                "type": "local",
+                "enabled": true,
+                "icon": "📝",
+                "input_type": "text",
+                "output_type": "deletion"
+            },
+            {
+                "id": "delete_regex",
+                "label": "Delete by Regex",
+                "description": "Prompts for a regex pattern and marks matching text items as deleted",
+                "type": "local",
+                "enabled": false,
+                "icon": "🔍",
+                "input_type": "text",
+                "output_type": "deletion",
+                "requires_user_input": true
+            }
+        ]
+    }
+}
