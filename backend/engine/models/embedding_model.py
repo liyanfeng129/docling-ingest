@@ -114,6 +114,18 @@ class EmbeddingManager:
         if not texts:
             return []
 
+        # Sanitize: remove None entries and ensure all values are strings
+        safe_texts = [str(t) for t in texts if t is not None]
+        if len(safe_texts) != len(texts):
+            logger.warning(
+                "embed_documents: dropped %d None/invalid entries before encoding",
+                len(texts) - len(safe_texts)
+            )
+        texts = safe_texts
+
+        if not texts:
+            return []
+
         logger.info("Embedding %d documents in batches of %d", len(texts), batch_size)
 
         embeddings = self._embeddings.encode(

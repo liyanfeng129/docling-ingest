@@ -4,9 +4,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies (cached unless this block changes)
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update --fix-missing && \
+RUN apt-get update --fix-missing && \
     apt-get install -y --no-install-recommends \
     build-essential \
     libxcb1 \
@@ -17,7 +15,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libgl1 \
     libglib2.0-0 \
     libsm6 \
-    poppler-utils
+    poppler-utils \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies (cached unless requirements.txt changes)
 COPY requirements.txt .

@@ -290,6 +290,12 @@ class VectorStoreManager:
             content = doc.get('content', '')
             metadata = doc.get('metadata', {})
 
+            # Guard against None or non-string content
+            if content is None:
+                logger.warning("[Ingest] Skipping document with None content: %s", doc_id)
+                continue
+            content = str(content)
+
             if not content.strip():
                 logger.warning("[Ingest] Skipping empty document: %s", doc_id)
                 continue

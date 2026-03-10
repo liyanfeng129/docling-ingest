@@ -106,6 +106,42 @@ npm run dev
 | `OLLAMA_BASE_URL` | Engine | `http://localhost:11434` | Ollama server URL |
 | `VISION_MODEL` | Engine | `granite3.2-vision:2b` | Ollama vision model name |
 
+## Persistent Data & Docker Volumes
+
+When running with Docker Compose, any files created by the app at runtime (such as the ChromaDB vector database) are stored in **named Docker volumes**, not on your local filesystem directly.
+
+### Where is the Vector DB?
+
+When you ingest a document, ChromaDB writes its data to the `chroma_data` volume, mapped to `/app/resources/chroma_db` inside the engine container.
+
+**To browse the data in Docker Desktop:**
+
+1. Open **Docker Desktop**
+2. Click **Volumes** in the left sidebar
+3. Click **`docling-ingest_chroma_data`**
+4. Click the **Data** tab to browse the files
+
+The ChromaDB collection files will be under the `default/` folder.
+
+**To inspect via terminal:**
+
+```bash
+# List files inside the volume
+docker exec -it docling-ingest-engine-1 ls /app/resources/chroma_db/default
+
+# Copy the entire database to your local machine
+docker cp docling-ingest-engine-1:/app/resources/chroma_db ./chroma_db_backup
+```
+
+**To use a local folder instead of a Docker volume** (so data appears directly in your project), replace the volume in `docker-compose.yml`:
+
+```yaml
+volumes:
+  - ./chroma_db:/app/resources/chroma_db   # bind mount — visible in Finder/Explorer
+```
+
+> **Note:** The `chroma_data` volume persists across container restarts and rebuilds. To fully delete it run `docker volume rm docling-ingest_chroma_data`.
+
 ## License
 
 [MIT](LICENSE)

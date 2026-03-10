@@ -27,6 +27,8 @@ services:
     volumes:
       - chroma_data:/app/resources/chroma_db
       - hf_cache:/root/.cache/huggingface
+      - pictures_data:/app/resources/pictures
+      - static_images:/app/static/images
 
   # Optional: enable with `docker compose --profile vision up`
   ollama:
@@ -42,3 +44,5 @@ volumes:
   chroma_data:
   hf_cache:
   ollama_data:
+  pictures_data:
+  static_images:
