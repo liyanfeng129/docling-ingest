@@ -10,7 +10,7 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 from dataclasses import dataclass
 
 
@@ -101,10 +101,10 @@ class VectorStoreManager:
                 self._default_collection = self._default_client.get_collection(
                     name=settings.CHROMA_COLLECTION_NAME
                 )
-            except ValueError:
+            except ValueError as exc:
                 raise RuntimeError(
                     f"Collection '{settings.CHROMA_COLLECTION_NAME}' not found in DB."
-                )
+                ) from exc
 
             self._is_loaded = True
             self._current_db_name = Path(persist_directory).name
@@ -257,6 +257,99 @@ class VectorStoreManager:
 
         return documents
 
+    async def search_with_scores(
+        self,
+        query: str,
+        k: int = 8,
+        collection_id: Optional[str] = None,
+        query_vector: Optional[List[float]] = None,
+    ) -> Tuple[List[Document], List[float], Dict[str, Any]]:
+        """Similarity search with distance scores on a specific collection.
+
+        Uses a temporary read-only client/collection and does not mutate
+        singleton default collection state.
+        """
+        target_collection_id = collection_id or self.current_db_name or "default"
+        resolved_query_vector = query_vector if query_vector is not None else embedding_manager.embed_query(query)
+
+        collection_path = self._get_collection_path(target_collection_id)
+        if not collection_path.exists():
+            raise ValueError(f"Collection '{target_collection_id}' not found")
+
+        def _query_collection() -> Dict[str, Any]:
+            temp_client = chromadb.PersistentClient(path=str(collection_path))
+            temp_collection = temp_client.get_collection(name=settings.CHROMA_COLLECTION_NAME)
+            return temp_collection.query(
+                query_embeddings=[resolved_query_vector],
+                n_results=k,
+                include=["documents", "metadatas", "distances"],
+            )
+
+        results = await asyncio.to_thread(_query_collection)
+
+        documents: List[Document] = []
+        distances: List[float] = []
+
+        if results.get("ids") and len(results["ids"][0]) > 0:
+            num_results = len(results["ids"][0])
+            for i in range(num_results):
+                content = results["documents"][0][i]
+                metadata = results["metadatas"][0][i] if results["metadatas"][0] else {}
+                distance = float(results["distances"][0][i]) if results.get("distances") else 0.0
+
+                documents.append(Document(page_content=content, metadata=metadata or {}))
+                distances.append(distance)
+
+        observability = {
+            "embeddingDim": len(resolved_query_vector),
+            "collectionDocCount": await self._get_collection_doc_count(target_collection_id),
+            "collectionName": target_collection_id,
+        }
+        return documents, distances, observability
+
+    async def get_collection_info(self, collection_id: str) -> Dict[str, Any]:
+        """Get metadata summary information for a collection."""
+        collection_path = self._get_collection_path(collection_id)
+        if not collection_path.exists():
+            raise ValueError(f"Collection '{collection_id}' not found")
+
+        def _info() -> Dict[str, Any]:
+            temp_client = chromadb.PersistentClient(path=str(collection_path))
+            temp_collection = temp_client.get_collection(name=settings.CHROMA_COLLECTION_NAME)
+            total_docs = temp_collection.count()
+
+            sample_result = temp_collection.get(limit=10, include=["metadatas"])
+            metadata_keys = set()
+            sample_metadata = {}
+
+            for metadata in sample_result.get("metadatas", []):
+                if metadata:
+                    metadata_keys.update(metadata.keys())
+                    if not sample_metadata:
+                        sample_metadata = metadata
+
+            return {
+                "id": collection_id,
+                "docCount": total_docs,
+                "metadataKeys": sorted(metadata_keys),
+                "sampleMetadata": sample_metadata,
+            }
+
+        return await asyncio.to_thread(_info)
+
+    async def _get_collection_doc_count(self, collection_id: str) -> int:
+        """Get document count for a collection without mutating state."""
+        collection_path = self._get_collection_path(collection_id)
+        if not collection_path.exists():
+            return 0
+
+        def _count() -> int:
+            temp_client = chromadb.PersistentClient(path=str(collection_path))
+            temp_collection = temp_client.get_collection(name=settings.CHROMA_COLLECTION_NAME)
+            return temp_collection.count()
+
+        return await asyncio.to_thread(_count)
+
     @property
     def is_loaded(self) -> bool:
         """Return whether the default vector store has been loaded."""
@@ -395,7 +488,7 @@ class VectorStoreManager:
                     self._switch_collection_sync, db_name, str(db_path)
                 )
                 return success
-            except Exception as e:
+            except (RuntimeError, OSError, ValueError) as e:
                 logger.error("Failed to switch to '%s': %s", db_name, e)
                 self._is_loaded = False
                 return False

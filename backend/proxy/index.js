@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require("cors");
 const ingestionRoutes = require('./routes/ingestionRoutes');
+const retrievalRoutes = require('./routes/retrievalRoutes');
 require('dotenv').config();
 
 /**
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/ingestion', ingestionRoutes);
+app.use('/api/retrieval', retrievalRoutes);
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));

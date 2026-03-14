@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     EMBEDDING_MODEL: str = "Snowflake/snowflake-arctic-embed-l-v2.0"
     # Device selection: "auto" (recommended), "cuda", "mps" (Apple Silicon), or "cpu"
     EMBEDDING_DEVICE: str = "auto"
+    RERANKER_MODEL: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
     # ChromaDB Configuration
     CHROMA_DB_DIRECTORY: str = "./resources/chroma_db"

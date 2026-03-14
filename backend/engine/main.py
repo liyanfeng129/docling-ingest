@@ -20,6 +20,7 @@ import uvicorn
 
 from config.settings import settings
 from routes.ingestion_routes import router as ingestion_router
+from routes.retrieval_routes import router as retrieval_router
 from services.startup_service import startup_service
 
 # Add the engine directory to the path for imports
@@ -115,6 +116,7 @@ logger.info("Serving document images from: %s", static_images_path)
 
 # Include routers
 app.include_router(ingestion_router)
+app.include_router(retrieval_router)
 
 
 @app.get("/")
@@ -132,6 +134,11 @@ async def root():
                 "ingest": "/api/ingestion/ingest",
                 "helpers": "/api/ingestion/helper/{helper_id}",
                 "strategies": "/api/ingestion/strategy/{strategy_id}",
+            },
+            "retrieval": {
+                "collections": "/api/retrieval/collections",
+                "search": "/api/retrieval/search",
+                "collectionInfo": "/api/retrieval/collection/{collection_id}/info",
             },
         }
     }

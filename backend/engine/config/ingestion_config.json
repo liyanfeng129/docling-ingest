@@ -68,5 +68,26 @@
             }
         ]
     },
+    "reranker_models": {
+        "_comment": "Available reranker models for query testing",
+        "items": [
+            {
+                "id": "ms-marco-MiniLM-L-6-v2",
+                "label": "MS MARCO MiniLM L6",
+                "model_name": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+                "enabled": true,
+                "is_default": true,
+                "estimated_size_mb": 80
+            },
+            {
+                "id": "ms-marco-MiniLM-L-12-v2",
+                "label": "MS MARCO MiniLM L12",
+                "model_name": "cross-encoder/ms-marco-MiniLM-L-12-v2",
+                "enabled": false,
+                "is_default": false,
+                "estimated_size_mb": 130
+            }
+        ]
+    },
     "default_collection": "default"
 }

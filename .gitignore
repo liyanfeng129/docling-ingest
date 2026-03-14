@@ -15,10 +15,8 @@ build/
 
 # Data
 chroma_db*/
-resources/pictures/*
-!resources/pictures/.gitkeep
-static/images/*
-!static/images/.gitkeep
+resources/
+static/
 docling/output/
 
 # IDE
