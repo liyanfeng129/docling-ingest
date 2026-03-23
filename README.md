@@ -39,7 +39,7 @@ A web application for PDF document ingestion with interactive preview, content e
 ### Docker Compose (Recommended)
 
 ```bash
-git clone https://github.com/yourusername/docling-ingest.git
+git clone https://github.com/liyanfeng129/docling-ingest.git
 cd docling-ingest
 docker compose up --build
 ```
