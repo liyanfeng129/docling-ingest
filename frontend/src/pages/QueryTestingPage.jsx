@@ -102,6 +102,7 @@ export default function QueryTestingPage() {
                     />
 
                     <ResultsList
+                        query={query}
                         results={results}
                         isSearching={isSearching}
                         error={error}
